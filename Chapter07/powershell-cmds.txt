@@ -1,0 +1,66 @@
+//Installing ECS ClI
+New-Item -ItemType "directory" -Path "C:\Program Files\Amazon\ECSCLI"
+
+//Configuring ECS CLI
+ecs-cli configure --cluster cluster_name --default-launch-type launch_type --region region_name --config-name configuration_name
+
+ecs-cli configure --cluster hello-world --region us-east-1 --default-launch-type FARGATE --config-name hello-world
+
+//Setting up CLI Profile
+ecs-cli configure profile --profile-name profile_name --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY
+
+ecs-cli configure profile --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY --profile-name  hello-world
+
+PS C:\PowerShell> Set-AWSCredential -AccessKey AKIAJ4DECNW6BFYN5PNA -SecretKey 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 -StoreAs default
+
+//Create the task execution role
+New-IAMRole -RoleName ecsExecutionRole -AssumeRolePolicyDocument (Get-Content -Raw C:\PowerShell\execution-assume-role.json)
+
+//Registering the Task Execution Policy
+Register-IAMRolePolicy -RoleName ecsExecutionRole -PolicyArn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
+//Creating an ECS Cluster
+esc-cli up
+
+//Creating a Security Group
+$groupid = New-EC2SecurityGroup -VpcId "vpc-6e021915" -Region "us-east-1" -GroupName "hello-worldPSSecurityGroup" -GroupDescription "EC2-VPC from PowerShell"
+
+
+//Remove EC2 Security group 
+Remove-EC2SecurityGroup -Region "us-east-1" $groupid
+
+
+//
+$ip1 = new-object Amazon.EC2.Model.IpPermission
+$ip1.IpProtocol = "tcp"
+$ip1.FromPort = 80
+$ip1.ToPort = 80
+$ip1.IpRanges.Add("0.0.0.0/0")
+
+//Granting Security Group Ingress
+ Grant-EC2SecurityGroupIngress -GroupId $groupid -Region "us-east-1" -IpPermissions @($ip1)
+
+$ip2 = new-object Amazon.EC2.Model.IpPermission
+$ip2.IpProtocol = "tcp"
+$ip2.FromPort = 3306
+$ip2.ToPort = 3306
+$ip2.IpRanges.Add("0.0.0.0/0")
+Grant-EC2SecurityGroupIngress -GroupId $groupid -Region "us-east-1" -IpPermissions @($ip2)
+
+//Deploying the Compose File to the Cluster
+ecs-cli compose service up
+ecs-cli compose --project-name hello-world service up --create-log-groups
+
+//Listing the Running Containers on the Cluster
+ecs-cli compose --project-name hello-world service ps
+
+//Listing the Container Logs
+ecs-cli logs --task-id 0c23d765-88c5-46cd-a317-9db243590c89 –follow
+
+//Scaling the Tasks on the Cluster
+ecs-cli compose --project-name hello-world service scale 2
+ecs-cli compose --project-name hello-world service ps
+
+//Deleting the Service and the Cluster
+ecs-cli compose --project-name hello-world service down
+ecs-cli down –force
