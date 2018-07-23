@@ -58,7 +58,7 @@ With the following software and hardware list you can run all code files present
 We also provide a PDF file that has color images of the screenshots/diagrams used in this book. [Click here to download it](http://www.packtpub.com/sites/default/files/downloads/AmazonFargateQuickStartGuide_ColorImages.pdf).
 
 ### Related products
-* Effective DevOps with AWS [[Packt]](https://www.packtpub.com/application-development/effective-devops-aws?utm_source=github&utm_medium=repository&utm_campaign=9781786466815) [[Amazon]](https://www.amazon.com/dp/	1786466813)
+* Effective DevOps with AWS [[Packt]](https://www.packtpub.com/application-development/effective-devops-aws?utm_source=github&utm_medium=repository&utm_campaign=9781786466815) [[Amazon]](https://www.amazon.com/dp/1786466813)
 
 * Linux Device Drivers Development [[Packt]](https://www.packtpub.com/virtualization-and-cloud/aws-automation-cookbook?utm_source=github&utm_medium=repository&utm_campaign=9781788394925) [[Amazon]](https://www.amazon.com/dp/)
 
